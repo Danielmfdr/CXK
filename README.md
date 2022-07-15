@@ -8,6 +8,6 @@ Só é possivel executar em sistemas operacionais Linux e é necessario Python3 
 2.Seguir as orientações que a aplicação exibe ao ser executada.
 
 ## Detalhes tecnicos:
-- Utiliza mmodulos basico de Python ("sys","time","json","datetime" e "pathlib").
+- Utiliza modulos basicos de Python ("sys","time","json","datetime" e "pathlib").
 - Os dados são armazenados em um arquivo .db (criado automaticamente pela aplicação após a execução) no formato JSON.
 - Os arquivos funcoes.py e db.py são classes que contem metodos para gerenciamento das funções da aplicação (saque,deposito e extrato) e gerenciamento do banco de dados, respectivamente.
