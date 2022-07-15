@@ -13,6 +13,7 @@ def main():
     dbname='base'
     cpf = str()
     count=0
+    cadastrar = False
 
     dbm_obj = dbm(dbname)
 
@@ -29,10 +30,12 @@ def main():
 
             break
         else:
-            print('\n','[INFO] Usuario não encontrado!','\n')
-            time.sleep(0.3)
 
-            cadastrar = True
+            if cpf :
+                cadastrar = True
+                print('\n','[INFO] Usuario não encontrado!','\n')
+
+            time.sleep(0.3)
 
             while cadastrar:
                 cad = input('[?] Gostaria de cadastrar uma conta com o seu CPF? : ')
@@ -53,6 +56,8 @@ def main():
                     sys.exit()
                 else:
                     print('\n','[INFO] Resposta inválida','\n')
+                    print('[INFO] Digite sim ou nao, por exemplo.')
+
 
     while True:
         try:
@@ -110,6 +115,7 @@ def main():
 def autoriza(digt,dbo):
 
     nDigt=[]
+    cpf=0
     for i in digt:
         try:
             nDigt.append(int(i))
@@ -142,13 +148,13 @@ def valida_cpf(lst):
             total=0
 
             if dg != lst[i]:
-                print('\n','[WARN] CPF Inválido!')
+                print('\n','[WARN] CPF Inválido!','\n')
                 return False
 
         return True
 
     else:
-        print('\n','[WARN] CPF Inválido!')
+        print('\n','[WARN] CPF Inválido!','\n')
         return False
 
 

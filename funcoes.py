@@ -39,7 +39,7 @@ class Funcoes():
     def extrato_conta(self):
         ext=self.dbo.get_data(self.cpf,'mov')
         if not len(ext):
-            print('[INFO] Conta sem movimentação!.')
+            print('\n','[INFO] Conta sem movimentação!.','\n')
         else:
             saldo=self.dbo.get_data(self.cpf,'saldo')
             print('\n','\n')
