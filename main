@@ -1,0 +1,160 @@
+#!/usr/bin/python3
+
+import sys
+import time
+import json
+
+from db import DatabaseManager as dbm
+from funcoes import Funcoes as funcs
+
+
+def main():
+
+    dbname='base'
+    cpf = str()
+    count=0
+
+    dbm_obj = dbm(dbname)
+
+    print('\n','     Konv Mini Bank','\n')
+
+    while True:
+        digt=input('Digite seu CPF:')
+
+        cpf,existe=autoriza(digt,dbm_obj)
+
+        if(existe):
+            print('\n','[INFO] Usuario encontrado!','\n')
+            hdl_conta = funcs(dbm_obj,cpf)
+
+            break
+        else:
+            print('\n','[INFO] Usuario não encontrado!','\n')
+            time.sleep(0.3)
+
+            cadastrar = True
+
+            while cadastrar:
+                cad = input('[?] Gostaria de cadastrar uma conta com o seu CPF? : ')
+                print('\n')
+
+                if cad == 's' or cad == 'sim':
+                    hdl_conta = funcs(dbm_obj,cpf)
+                    nome = input('[C] Digite o seu nome: ')
+
+                    if(hdl_conta.cria_conta({'nome':nome})):
+                        print('\n','[INFO] Conta cadastrada com sucesso!','\n')
+                        cadastrar = False
+                    else:
+                        sys.exit()
+
+                elif cad == 'n' or cad == 'não' or cad == 'nao':
+                    print('\n','Obrigado por utilizar, até a proxima! ;)','\n')
+                    sys.exit()
+                else:
+                    print('\n','[INFO] Resposta inválida','\n')
+
+    while True:
+        try:
+            menu = True
+
+            print('Menu Funções:')
+            d_funcs = {1:['d','Depositar'],2:['s','Sacar'],3:['e','Extrato']}
+
+            print('\n','1 - Depósito'+'\n','2 - Saque','\n','3 - Extrato','\n','4 - Sair','\n')
+
+            func = int(input('Digite o valor numerico referente a opção desejada:'))
+
+            if func == 1 or func == 2:
+                while menu:
+                    try:
+                        msg = 'Digite um valor para {0} (somente valores inteiros [Ex: 5]):'
+
+                        if func == 2:
+                            print('\n','[INFO] Notas disponíveis:')
+                            print(' 1,00 ; 2,00; 5,00; 10,00 ; 20,00 ; 50,00 ; 100,00','\n')
+
+                        valor = int(input(msg.format(d_funcs[func][1])))
+
+                        if valor == 0:
+                            raise ValueError
+
+                    except ValueError as err:
+                        print('\n','[WARN] Digite um valor válido!','\n','\n')
+
+                    else:
+                        if(hdl_conta.movimenta_conta(valor,d_funcs[func][0])):
+                            print('\n','\n')
+                            print('[INFO] Operação Realizada com sucesso!')
+                            print('\n','\n')
+                        time.sleep(1)
+                        menu=False
+
+            elif func == 3:
+                hdl_conta.extrato_conta()
+                time.sleep(1)
+                menu=False
+
+            elif func == 4:
+                print('\n','Obrigado por utilizar, até a proxima! ;)','\n')
+                break
+            else:
+                print('\n','[WARN] Digite uma opção válida!','\n','\n')
+                time.sleep(1)
+
+        except ValueError as err:
+            print('\n','[WARN] Digite um valor válido!','\n','\n')
+            time.sleep(1)
+
+
+def autoriza(digt,dbo):
+
+    nDigt=[]
+    for i in digt:
+        try:
+            nDigt.append(int(i))
+        except:
+            pass
+
+    if(valida_cpf(nDigt)):
+        cpf = str()
+        for i in nDigt:
+            cpf+=str(i)
+
+        if(dbo.get_data(cpf)):
+            return cpf,True
+
+    return cpf,False
+
+
+def valida_cpf(lst):
+
+    if len(lst) == 11 and not len(set(lst))==1:
+        total=0
+        dg=0
+
+        for i in range(9,11):
+            mult=i+1
+            for n in range(i):
+                total+=lst[n]*mult
+                mult-=1
+            dg=(total*10)%11
+            total=0
+
+            if dg != lst[i]:
+                print('\n','[WARN] CPF Inválido!')
+                return False
+
+        return True
+
+    else:
+        print('\n','[WARN] CPF Inválido!')
+        return False
+
+
+
+
+
+if __name__ == '__main__':
+    main()
+
